@@ -22,9 +22,9 @@ class ProductStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|min:3',
-            'price'=>'required|numeric',
-            'image_url.*'=>'image|mimes:jpeg,jpg,png,svg|max:4096'
+            'name' => 'required|min:3',
+            'price' => 'required|numeric',
+            'image_url.*' => 'image|mimes:jpeg,jpg,png,svg|max:4096'
         ];
     }
 }
