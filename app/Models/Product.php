@@ -19,12 +19,12 @@ class Product extends Model
 
     public function colors()
     {
-        return $this->hasMany(Color::class, 'product_id');
+        return $this->hasMany(Color::class);
     }
 
     public function images()
     {
-        return $this->hasMany(Image::class, 'product_id');
+        return $this->hasMany(Image::class);
     }
 
     public function users()
