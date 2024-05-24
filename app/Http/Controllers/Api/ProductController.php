@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Product\ProductStoreRequest;
+use App\Models\Color;
 use App\Models\Image;
 use App\Models\Product;
 use App\Traits\GeneralTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
@@ -19,7 +21,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::with(['images', 'colors'])->get();
+        return $this->returnData($products);
     }
 
     /**
@@ -35,7 +38,13 @@ class ProductController extends Controller
             'description' => $request->description
         ]);
 
-        $this->storeImage($request, $product, $timestamp);
+        if ($request->has('color')) {
+            $this->storeColor($request, $product, $timestamp);
+        }
+
+        if ($request->hasFile('image_url')) {
+            $this->storeImage($request, $product, $timestamp);
+        }
 
         return $this->returnSuccessMessage('Product added successfully!');
     }
@@ -43,9 +52,10 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
+        $product = Product::with(['images', 'colors'])->findOrFail($id);
+        return $this->returnData($product);
     }
 
     /**
@@ -53,7 +63,6 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
     }
 
     /**
@@ -61,7 +70,16 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        if ($product->images) {
+            foreach ($product->images as $image) {
+                if (File::exists(public_path('Images/Products/' . $image->image_url))) {
+                    File::delete(public_path('Images/Products/' . $image->image_url));
+                }
+            }
+        }
+        $product->delete();
+
+        return $this->returnSuccessMessage('Product deleted successfully!');
     }
 
     public function storeImage($request, $product, $timestamp)
@@ -80,5 +98,22 @@ class ProductController extends Controller
         }
 
         Image::insert($imageData);
+    }
+
+    public function storeColor($request, $product, $timestamp)
+    {
+        $colorData = [];
+        $colors = $request->color;
+
+        foreach ($colors as $color) {
+            $colorData[] = [
+                'color' => $color,
+                'product_id' => $product->id,
+                'created_at' => $timestamp,
+                'updated_at' => $timestamp
+            ];
+        }
+
+        Color::insert($colorData);
     }
 }
