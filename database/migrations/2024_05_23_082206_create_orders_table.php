@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('status');
-            $table->unsignedBigInteger('subtotal');
-            $table->unsignedBigInteger('shipping_fee');
+            $table->string('status')->default('pending');
+            $table->unsignedBigInteger('subtotal')->nullable();
+            $table->unsignedBigInteger('shipping_fee')->nullable();
             // User info
             $table->string('name');
             $table->text('address');
             $table->string('phone');
             // Foreign key and timestamps
-            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnUpdate()->nullOnDelete();
             $table->timestamps();
         });
     }
