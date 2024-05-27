@@ -27,9 +27,9 @@ class Product extends Model
         return $this->hasMany(Image::class);
     }
 
-    public function users()
+    public function orders()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(Product::class)->withPivot('paid_price', 'quantity')->withTimestamps();
     }
 
     /**
@@ -41,7 +41,7 @@ class Product extends Model
     {
         return [
             'price' => MoneyCast::class,
-            'discount_price' => MoneyCast::class
+            'discount_price' => MoneyCast::class,
         ];
     }
 }

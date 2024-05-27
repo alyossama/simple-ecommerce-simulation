@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'address'
     ];
 
     /**
@@ -46,7 +48,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function products(){
-        return $this->belongsToMany(Product::class);
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }
