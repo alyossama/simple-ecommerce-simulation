@@ -32,11 +32,13 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
+            'phone' => $request->phone,
+            'address' => $request->address
         ]);
 
-        $token = $user->createToken('User Personal Token');
+        $token = $user->createToken("Token for Email: $request->email");
 
-        return $this->returnSuccessMessageWithToken('User successfully created!', $token);
+        return $this->returnSuccessMessageWithToken('User successfully created!', $token->plainTextToken);
     }
 
     /**
@@ -90,7 +92,8 @@ class UserController extends Controller
      */
     public function logout()
     {
-        auth()->user()->tokens()->delete();
+        auth()->user()->currentAccessToken()->delete();
+
         // create token for this user
         return $this->returnSuccessMessage('User logged out successfully!');
     }
