@@ -31,7 +31,7 @@ class OrderProductStoreRequest extends FormRequest
     public function messages()
     {
         return [
-            'items.*.product_id' => 'No product found with the provided product_id'
+            'items.*.product_id' => 'No product found with product id = :input'
         ];
     }
 }
