@@ -22,9 +22,16 @@ class OrderProductStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "items"=>"required|array",
-            'items.*.product_id'=>'required|exists:products,id',
-            'items.*.quantity'=>'required|integer|min:1',
+            "items" => "required|array",
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.quantity' => 'required|integer|min:1',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'items.*.product_id' => 'No product found with the provided product_id'
         ];
     }
 }
